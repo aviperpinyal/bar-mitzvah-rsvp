@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Alex's Bar Mitzvah</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --crimson: #6B0E05; --red: #9E1F10; --orange: #C83A18;
+      --amber: #D96818;   --gold: #EAAC2C; --sky: #5AABD8;
+      --dark: #0E0606;   --ivory: #FDF5F0; --white: #fff;
+      --text: #1A0805;   --mid: #5A3020;   --light: #9B7060;
+      --grad: linear-gradient(135deg,#C83A18 0%,#D96818 50%,#EAAC2C 100%);
+      --border: #E8D8D0; --input-bg: #FDF8F5;
+      --radius: 10px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #F5EDE6; color: var(--text); min-height: 100vh; }
+
+    /* ── Header ── */
+    header {
+      background: var(--dark);
+      padding: 14px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 20px; }
+    header h1 { font-family: 'Cormorant Garamond',serif; font-size: 20px; font-weight: 300; font-style: italic; color: rgba(255,255,255,.8); }
+    header h1 span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .back-link { font-size: 12px; color: rgba(255,255,255,.4); letter-spacing: 1px; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+    .back-link:hover { color: var(--gold); }
+    .save-bar { display: flex; align-items: center; gap: 12px; }
+    .save-status { font-size: 12px; color: rgba(255,255,255,.35); }
+    .save-status.saved { color: #81C784; }
+    .save-status.error { color: #EF9A9A; }
+
+    /* ── Layout ── */
+    .page { max-width: 920px; margin: 0 auto; padding: 32px 20px 80px; }
+
+    /* ── Nav tabs ── */
+    .tab-nav { display: flex; gap: 4px; margin-bottom: 28px; background: rgba(0,0,0,.06); border-radius: 12px; padding: 5px; }
+    .tab-btn {
+      flex: 1; padding: 9px 12px; border: none; border-radius: 9px; cursor: pointer;
+      font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 500; letter-spacing: .5px;
+      background: transparent; color: var(--mid); transition: all .18s;
+    }
+    .tab-btn.active { background: #fff; color: var(--orange); box-shadow: 0 2px 8px rgba(0,0,0,.1); font-weight: 600; }
+    .tab-btn:hover:not(.active) { background: rgba(255,255,255,.5); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Cards ── */
+    .card { background: #fff; border-radius: 14px; padding: 28px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+    .card-title { font-family: 'Cormorant Garamond',serif; font-size: 22px; font-weight: 400; font-style: italic; color: var(--dark); margin-bottom: 4px; }
+    .card-subtitle { font-size: 12px; color: var(--light); margin-bottom: 22px; }
+    .card-divider { height: 1px; background: var(--border); margin: 22px 0; }
+
+    /* ── Form elements ── */
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .field-row.thirds { grid-template-columns: 1fr 1fr 1fr; }
+    .field-row.full { grid-template-columns: 1fr; }
+    .field { margin-bottom: 0; }
+    label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--light); margin-bottom: 6px; }
+    input[type=text], input[type=email], input[type=date], input[type=url], input[type=time], select, textarea {
+      width: 100%; padding: 10px 13px;
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      background: var(--input-bg); color: var(--text);
+      font-family: 'Inter',sans-serif; font-size: 13.5px;
+      transition: border-color .18s; outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--orange); background: #fff; }
+    textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+    .field-hint { font-size: 11px; color: var(--light); margin-top: 5px; font-style: italic; }
+
+    /* ── Toggle switch ── */
+    .toggle-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+    .toggle-label { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; }
+    .toggle-desc { font-size: 12px; color: var(--light); display: block; margin-top: 1px; }
+    .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; cursor: pointer;
+      background: #D0C0B8; border-radius: 24px; transition: background .2s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      width: 18px; height: 18px; border-radius: 50%; background: #fff;
+      left: 3px; top: 3px; transition: transform .2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+    .toggle input:checked + .toggle-slider { background: var(--orange); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+    /* ── Event cards ── */
+    .event-block { border: 1.5px solid var(--border); border-radius: 12px; padding: 22px; margin-bottom: 16px; }
+    .event-block-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+    .event-block-icon { font-size: 22px; }
+    .event-block-title { font-size: 15px; font-weight: 600; color: var(--dark); }
+    .event-block-date { font-size: 12px; color: var(--light); margin-top: 1px; }
+    .event-block:hover { border-color: var(--amber); }
+
+    /* ── Test run ── */
+    .test-case { border: 1.5px solid var(--border); border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
+    .test-case-info { }
+    .test-case-label { font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 2px; }
+    .test-case-desc { font-size: 11px; color: var(--light); margin-bottom: 10px; }
+    .test-case-events { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .event-chip { font-size: 10px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; background: #FEE8D8; color: var(--orange); }
+    .test-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+    .btn-test {
+      padding: 9px 18px; border-radius: 50px; border: none; cursor: pointer;
+      font-family: 'Inter',sans-serif; font-size: 12px; font-weight: 600;
+      letter-spacing: .8px; text-transform: uppercase;
+      background: var(--grad); color: #fff;
+      box-shadow: 0 2px 12px rgba(200,58,24,.3); transition: opacity .2s;
+    }
+    .btn-test:hover { opacity: .85; }
+    .btn-test:disabled { opacity: .4; cursor: default; }
+    .test-result { font-size: 11px; color: #2E7D32; display: none; }
+    .test-result.err { color: #C62828; }
+
+    /* ── Reminder rows ── */
+    .reminder-row { display: grid; grid-template-columns: 160px 1fr auto; gap: 12px; align-items: end; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .reminder-row:last-child { border-bottom: none; }
+
+    /* ── Buttons ── */
+    .btn-save {
+      padding: 10px 28px; border-radius: 50px; border: none; cursor: pointer;
+      background: var(--grad); color: #fff;
+      font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      box-shadow: 0 3px 16px rgba(200,58,24,.35); transition: opacity .2s;
+    }
+    .btn-save:hover { opacity: .88; }
+    .btn-save:disabled { opacity: .4; }
+    .section-save { margin-top: 24px; display: flex; align-items: center; gap: 14px; }
+    .section-save-msg { font-size: 12px; display: none; }
+    .section-save-msg.ok  { color: #2E7D32; display: block; }
+    .section-save-msg.err { color: #C62828; display: block; }
+
+    /* ── Password field ── */
+    .password-row { display: flex; align-items: center; gap: 8px; }
+    .password-row input { flex: 1; }
+    .btn-reveal { padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--input-bg); cursor: pointer; font-size: 13px; color: var(--light); }
+    .btn-reveal:hover { border-color: var(--orange); color: var(--orange); }
+
+    #login-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(160deg,#0E0606,#280C0A);
+    }
+    .login-box { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 20px; padding: 48px 44px; width: 360px; backdrop-filter: blur(8px); text-align: center; }
+    .login-box h1 { font-family:'Cormorant Garamond',serif; font-size: 26px; font-weight: 300; font-style: italic; color: #fff; margin-bottom: 6px; }
+    .login-box p { font-size: 13px; color: rgba(255,255,255,.35); margin-bottom: 28px; }
+    .login-box input { width: 100%; padding: 13px 16px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.15); border-radius: 10px; color: #fff; font-family:'Inter',sans-serif; font-size: 15px; outline: none; text-align: center; letter-spacing: 3px; margin-bottom: 14px; }
+    .login-box input:focus { border-color: var(--orange); }
+    .login-btn { width: 100%; padding: 13px; background: var(--grad); border: none; border-radius: 50px; color: #fff; font-family:'Inter',sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; }
+    .login-err { margin-top: 12px; font-size: 12px; color: var(--gold); display: none; }
+
+    #app { display: none; }
+    #app.visible { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login-screen" style="display:none">
+  <div class="login-box">
+    <h1>Settings</h1>
+    <p>Alex's Bar Mitzvah · Admin</p>
+    <input type="password" id="token-input" placeholder="Admin token" autocomplete="off">
+    <button class="login-btn" id="login-btn">Sign In</button>
+    <p class="login-err" id="login-err">Incorrect token.</p>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <header>
+    <div class="header-left">
+      <a href="/admin" class="back-link">← RSVPs</a>
+      <a href="/guests" class="back-link">👥 Guests</a>
+      <h1>Alex's Bar Mitzvah &nbsp;<span>Settings</span></h1>
+    </div>
+    <div class="save-bar">
+      <span class="save-status" id="global-status"></span>
+      <button class="btn-save" id="save-all-btn">Save All Changes</button>
+    </div>
+  </header>
+
+  <div class="page">
+    <!-- Tab nav -->
+    <div class="tab-nav">
+      <button class="tab-btn active" data-tab="events">Events</button>
+      <button class="tab-btn" data-tab="rsvp">RSVP & Reminders</button>
+      <button class="tab-btn" data-tab="email">Email & Contact</button>
+      <button class="tab-btn" data-tab="content">Site Content</button>
+      <button class="tab-btn" data-tab="testing">Test Emails</button>
+    </div>
+
+    <!-- ═══════════════════════════ EVENTS ═══════════════════════════ -->
+    <div class="tab-panel active" id="tab-events">
+
+      <div id="events-list"><!-- populated by JS --></div>
+
+      <div class="card">
+        <div class="card-title">Travel & Logistics</div>
+        <div class="card-subtitle">Shown in the Travel section of the website</div>
+        <div class="field-row">
+          <div class="field"><label>Hotel Name</label><input type="text" data-cfg="travel.hotelName" placeholder="e.g. Marriott Courtyard White Plains"></div>
+          <div class="field"><label>Booking Deadline</label><input type="date" data-cfg="travel.hotelDeadline"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Hotel Booking URL</label><input type="url" data-cfg="travel.hotelBookingUrl" placeholder="https://..."></div>
+          <div class="field"><label>Hotel Booking Code</label><input type="text" data-cfg="travel.hotelBookingCode" placeholder="Group code"></div>
+        </div>
+        <div class="field-row full">
+          <div class="field"><label>Hotel Notes</label><textarea data-cfg="travel.hotelNotes" placeholder="Any extra hotel instructions..."></textarea></div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="field-row">
+          <div class="field"><label>Nearest Airport</label><input type="text" data-cfg="travel.airportName" placeholder="e.g. Westchester County Airport"></div>
+          <div class="field"><label>Airport Code</label><input type="text" data-cfg="travel.airportCode" placeholder="e.g. HPN"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Google Maps / Directions URL</label><input type="url" data-cfg="travel.directionsUrl" placeholder="https://maps.google.com/..."></div>
+          <div class="field"><label>Parking Info</label><input type="text" data-cfg="travel.parkingInfo" placeholder="e.g. Free parking on-site"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ RSVP & REMINDERS ═══════════════════════════ -->
+    <div class="tab-panel" id="tab-rsvp">
+
+      <div class="card">
+        <div class="card-title">RSVP Settings</div>
+        <div class="card-subtitle">Control the RSVP deadline and whether the form is accepting responses</div>
+        <div class="field-row">
+          <div class="field">
+            <label>RSVP Deadline</label>
+            <input type="date" data-cfg="site.rsvpDeadline">
+            <div class="field-hint">Shown to guests on the website and in emails</div>
+          </div>
+          <div class="field">
+            <label>RSVP Status</label>
+            <div class="toggle-row" style="padding: 8px 0 0">
+              <div>
+                <span class="toggle-label">Form is open</span>
+                <span class="toggle-desc">Turn off to close the form after the deadline</span>
+              </div>
+              <label class="toggle"><input type="checkbox" data-cfg-bool="site.rsvpOpen"><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+        </div>
+        <div class="field-row full">
+          <div class="field">
+            <label>RSVP Closed Message</label>
+            <textarea data-cfg="site.rsvpClosedMessage" placeholder="Message shown when RSVP form is closed..."></textarea>
+            <div class="field-hint">Shown to guests who click their link after the form is closed</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Reminder Emails</div>
+        <div class="card-subtitle">Sent to guests who have not yet responded. Run <code>node scripts/send-reminders.js</code> on the scheduled date — or set up a cron job.</div>
+        <div id="reminders-list"><!-- populated by JS --></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Pre-Event Updates</div>
+        <div class="card-subtitle">Logistics emails sent to confirmed guests a few days before each event</div>
+        <div id="updates-list"><!-- populated by JS --></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Pre-Event Email Messages</div>
+        <div class="card-subtitle">Write separate messages based on which events guests are attending. Event details are included automatically — just write your personal note.</div>
+
+        <div class="field-row">
+          <div class="field"><label>Preview Text (shown in inbox)</label><input type="text" data-cfg="emailTemplates.preEvent.previewText"></div>
+        </div>
+
+        <div style="margin-top:16px;padding:16px 18px;background:rgba(184,92,56,0.04);border:1px solid rgba(184,92,56,0.18);border-radius:10px;margin-bottom:10px;">
+          <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#B85C38;margin-bottom:4px;">Service Only Guests</div>
+          <div style="font-size:12px;color:var(--light);margin-bottom:14px;">Guests attending the Shabbat Services and/or Bar Mitzvah Service &amp; Luncheon — but not the Evening Celebration</div>
+          <div class="field"><label>Subject Line</label><input type="text" id="preEvent-group-service-subject" placeholder="We can't wait to see you — Alex's Bar Mitzvah is almost here!"></div>
+          <div class="field" style="margin-top:10px;"><label>Message Body</label><textarea id="preEvent-group-service-body" style="min-height:120px" placeholder="Write your message to service-only guests…"></textarea></div>
+        </div>
+
+        <div style="padding:16px 18px;background:rgba(184,92,56,0.04);border:1px solid rgba(184,92,56,0.18);border-radius:10px;">
+          <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#B85C38;margin-bottom:4px;">Full Weekend Guests</div>
+          <div style="font-size:12px;color:var(--light);margin-bottom:14px;">Guests attending the Evening Celebration and/or Morning After Breakfast</div>
+          <div class="field"><label>Subject Line</label><input type="text" id="preEvent-group-full-subject" placeholder="We can't wait to see you — Alex's Bar Mitzvah is almost here!"></div>
+          <div class="field" style="margin-top:10px;"><label>Message Body</label><textarea id="preEvent-group-full-body" style="min-height:120px" placeholder="Write your message to full weekend guests…"></textarea></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════════════════════ EMAIL & CONTACT ═══════════════════════════ -->
+    <div class="tab-panel" id="tab-email">
+
+      <div class="card">
+        <div class="card-title">Sender Details</div>
+        <div class="card-subtitle">Used as the "From" name and address on all outgoing emails</div>
+        <div class="field-row">
+          <div class="field"><label>From Name</label><input type="text" data-cfg="contact.fromName" placeholder="e.g. Jordan & Taylor Sample"></div>
+          <div class="field"><label>From Email</label><input type="email" data-cfg="contact.fromEmail" placeholder="jordan@example.com"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Reply-To Email</label><input type="email" data-cfg="contact.replyTo"></div>
+          <div class="field"><label>Gmail Username</label><input type="email" data-cfg="contact.gmailUser" placeholder="jordan@example.com"></div>
+        </div>
+        <div class="field-row full">
+          <div class="field">
+            <label>Gmail App Password</label>
+            <div class="password-row">
+              <input type="password" data-cfg="contact.gmailAppPassword" id="app-pass-input" placeholder="xxxx xxxx xxxx xxxx" autocomplete="new-password">
+              <button class="btn-reveal" onclick="togglePass()">Show</button>
+            </div>
+            <div class="field-hint">Generate this in your Google Account → Security → App Passwords. It's a 16-character password for this app only.</div>
+          </div>
+        </div>
+        <div class="field-row full">
+          <div class="field" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+            <button class="btn-save" id="test-connection-btn" type="button" onclick="testGmailConnection()" style="padding:9px 22px;font-size:12px;">Test Gmail Connection</button>
+            <span id="test-connection-result" style="font-size:13px;display:none;"></span>
+          </div>
+        </div>
+        <div class="field-row full">
+          <div class="field">
+            <label>Admin Notification Emails</label>
+            <input type="text" data-cfg-array="contact.notifyEmails" placeholder="jordan@example.com, taylor@example.com">
+            <div class="field-hint">Comma-separated. These addresses get a notification each time an RSVP is submitted.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Save-the-Date Email</div>
+        <div class="card-subtitle">Sent before formal invitations go out. Run <code>node scripts/send-save-the-date.js --dry-run</code> to preview.</div>
+        <div class="field-row">
+          <div class="field"><label>Subject Line</label><input type="text" data-cfg="saveTheDate.subject"></div>
+          <div class="field"><label>Preview Text (shown in inbox)</label><input type="text" data-cfg="saveTheDate.previewText"></div>
+        </div>
+        <div class="field-row full">
+          <div class="field"><label>Opening Line</label><textarea data-cfg="saveTheDate.openingLine" style="min-height:60px"></textarea></div>
+        </div>
+        <div class="field-row full">
+          <div class="field"><label>Closing Line</label><textarea data-cfg="saveTheDate.closingLine" style="min-height:60px"></textarea></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Website URL (linked in email)</label><input type="text" data-cfg="saveTheDate.websiteUrl" placeholder="https://rsvp.example.com"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Email Subject Lines & Opening Text</div>
+        <div class="card-subtitle">Customise each type of outgoing email</div>
+
+        <div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:14px;">Invitation Email</div>
+        <div class="field-row">
+          <div class="field"><label>Subject Line</label><input type="text" data-cfg="emailTemplates.invitation.subject"></div>
+          <div class="field"><label>Preview Text (shown in inbox)</label><input type="text" data-cfg="emailTemplates.invitation.previewText"></div>
+        </div>
+        <div class="field-row full">
+          <div class="field"><label>Opening Line</label><textarea data-cfg="emailTemplates.invitation.openingLine" style="min-height:60px"></textarea></div>
+        </div>
+        <div class="field-row full">
+          <div class="field"><label>Closing Line</label><textarea data-cfg="emailTemplates.invitation.closingLine" style="min-height:60px"></textarea></div>
+        </div>
+
+        <div class="card-divider"></div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:14px;">Reminder Email</div>
+        <div class="field-row">
+          <div class="field"><label>Subject Line</label><input type="text" data-cfg="emailTemplates.reminder.subject"></div>
+          <div class="field"><label>Preview Text</label><input type="text" data-cfg="emailTemplates.reminder.previewText"></div>
+        </div>
+        <div class="field-row full">
+          <div class="field"><label>Opening Line</label><textarea data-cfg="emailTemplates.reminder.openingLine" style="min-height:60px"></textarea></div>
+        </div>
+
+        <div class="card-divider"></div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:14px;">Pre-Event Update Email</div>
+        <div class="field-row">
+          <div class="field"><label>Subject Line (default)</label><input type="text" data-cfg="emailTemplates.preEvent.subject"></div>
+          <div class="field"><label>Preview Text</label><input type="text" data-cfg="emailTemplates.preEvent.previewText"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ SITE CONTENT ═══════════════════════════ -->
+    <div class="tab-panel" id="tab-content">
+
+      <div class="card">
+        <div class="card-title">About Alex</div>
+        <div class="card-subtitle">Shown in the "About" section of the website</div>
+        <div class="field-row full">
+          <div class="field"><label>Alex's Story</label><textarea data-cfg="about.honoreeBlurb" style="min-height:160px"></textarea></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Torah Portion (Parasha Name)</label><input type="text" data-cfg="about.torahPortion" placeholder="e.g. Ekev"></div>
+          <div class="field"><label>Torah Portion Description</label><input type="text" data-cfg="about.torahPortionDescription" placeholder="Brief description"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Site Text</div>
+        <div class="card-subtitle">General labels and messaging shown on the website</div>
+        <div class="field-row">
+          <div class="field"><label>Page Title (browser tab)</label><input type="text" data-cfg="site.title"></div>
+          <div class="field"><label>Hero Eyebrow Text</label><input type="text" data-cfg="site.heroEyebrow" placeholder="You are invited to celebrate"></div>
+        </div>
+        <div class="field-row full">
+          <div class="field"><label>Footer Tagline</label><input type="text" data-cfg="site.footerTagline"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ TEST EMAILS ═══════════════════════════ -->
+    <div class="tab-panel" id="tab-testing">
+
+      <div class="card">
+        <div class="card-title">Test Email Sender</div>
+        <div class="card-subtitle">
+          Send a real test email to any address to preview exactly what a guest will receive.
+          The RSVP link in invite emails is live — click through to see the full guest experience.
+          Test tokens won't appear in your guest stats.
+        </div>
+
+        <!-- Email type -->
+        <div class="field-row">
+          <div class="field" style="flex:1 1 220px;">
+            <label>Email Type</label>
+            <select id="test-email-type">
+              <option value="invite">Initial Invite</option>
+              <option value="reminder">1st RSVP Reminder</option>
+              <option value="reminder">Final RSVP Reminder</option>
+              <option value="preEvent">Pre-Event Details</option>
+            </select>
+          </div>
+          <div class="field" style="flex:1 1 220px;">
+            <label>Send To</label>
+            <input type="email" id="test-send-to" placeholder="test@youremail.com">
+          </div>
+        </div>
+
+        <!-- Events -->
+        <div class="field" style="margin-bottom:16px;">
+          <label>Events Invited</label>
+          <div id="test-event-checkboxes" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;"></div>
+        </div>
+
+        <!-- Guest counts -->
+        <div class="field-row" style="margin-bottom:20px;">
+          <div class="field" style="flex:0 0 140px;">
+            <label>Total Guests</label>
+            <input type="number" id="test-guest-count" min="1" max="20" value="2" style="width:100%;">
+          </div>
+          <div class="field" style="flex:0 0 140px;">
+            <label>Kids (hoodies)</label>
+            <input type="number" id="test-kids-count" min="0" max="10" value="0" style="width:100%;">
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <button class="btn-test" id="btn-send-test" style="font-size:13px;padding:11px 28px;">Send Test Email ↗</button>
+          <div class="test-result" id="test-unified-result"></div>
+        </div>
+
+        <!-- Progress log -->
+        <div id="email-log-wrap" style="display:none;margin-top:18px;">
+          <div style="font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--light);margin-bottom:8px;">Send Log</div>
+          <div id="email-log" style="background:#0E0606;border-radius:10px;padding:14px 16px;font-family:monospace;font-size:12px;color:#C8D8B8;line-height:1.8;max-height:200px;overflow-y:auto;white-space:pre-wrap;"></div>
+        </div>
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--light);">
+          Emails are sent using your Gmail settings from the <strong>Email &amp; Contact</strong> tab.
+          Use <strong>Test Gmail Connection</strong> there first to verify your credentials.
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /page -->
+</div><!-- /app -->
+
+<script src="settings.js"></script>
+</body>
+</html>

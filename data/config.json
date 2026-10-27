@@ -1,0 +1,267 @@
+{
+  "_comment": "Master settings file for the event website. Edit anything here or use the Admin → Settings page. The names, emails, and venue below are fictional sample data.",
+  "site": {
+    "title": "Alex Sample's Bar Mitzvah",
+    "heroEyebrow": "You are invited to celebrate",
+    "heroSubtitle": "the Bar Mitzvah of",
+    "familyName": "Sample",
+    "rsvpDeadline": "2026-07-15",
+    "rsvpOpen": true,
+    "rsvpClosedMessage": "The RSVP period has now closed. Please contact Jordan or Taylor directly if you have questions.",
+    "footerTagline": "Made with love for Alex · Sample Family · 2026"
+  },
+  "contact": {
+    "fromName": "Jordan & Taylor Sample",
+    "fromEmail": "jordan@example.com",
+    "replyTo": "jordan@example.com",
+    "notifyEmails": [
+      "jordan@example.com",
+      "taylor@example.com"
+    ],
+    "gmailUser": "jordan@example.com",
+    "gmailAppPassword": "REPLACE_WITH_YOUR_APP_PASSWORD"
+  },
+  "events": [
+    {
+      "id": 1,
+      "name": "Shabbat Services & Dinner",
+      "shortName": "Shabbat",
+      "emoji": "✡",
+      "isoDate": "2026-08-21",
+      "displayDate": "Friday, August 21, 2026",
+      "time": "6:30 PM",
+      "venueName": "",
+      "address": "",
+      "city": "",
+      "description": "Kabbalat Shabbat services followed by a festive Shabbat dinner. For family and out-of-town guests.",
+      "dressCode": "Shabbat / synagogue attire",
+      "additionalNotes": "",
+      "inviteOnly": true
+    },
+    {
+      "id": 2,
+      "name": "Bar Mitzvah Service & Luncheon",
+      "shortName": "Service",
+      "emoji": "📖",
+      "isoDate": "2026-08-22",
+      "displayDate": "Saturday, August 22, 2026",
+      "time": "10:00 AM",
+      "venueName": "",
+      "address": "",
+      "city": "",
+      "description": "Alex will chant from the Torah and deliver his d'var Torah, followed by a festive celebratory luncheon.",
+      "dressCode": "Business casual or synagogue-appropriate attire",
+      "additionalNotes": "All guests are welcome to attend the service.",
+      "inviteOnly": false
+    },
+    {
+      "id": 3,
+      "name": "Evening Celebration",
+      "shortName": "Party",
+      "emoji": "🌅",
+      "isoDate": "2026-08-22",
+      "displayDate": "Saturday, August 22, 2026",
+      "time": "6:30 PM",
+      "venueName": "",
+      "address": "",
+      "city": "",
+      "description": "An outdoor evening under the stars — cocktails, dinner, dancing, and celebration beneath the gazebo.",
+      "dressCode": "Cocktail attire. Comfortable footwear recommended for the lawn.",
+      "additionalNotes": "A light layer is recommended for the evening air.",
+      "inviteOnly": true
+    },
+    {
+      "id": 4,
+      "name": "Morning After Breakfast",
+      "shortName": "Breakfast",
+      "emoji": "☕",
+      "isoDate": "2026-08-23",
+      "displayDate": "Sunday, August 23, 2026",
+      "time": "10:00 AM",
+      "venueName": "",
+      "address": "",
+      "city": "",
+      "description": "A relaxed morning breakfast to close out the weekend with family and close friends.",
+      "dressCode": "Casual",
+      "additionalNotes": "",
+      "inviteOnly": true
+    }
+  ],
+  "travel": {
+    "hotelName": "",
+    "hotelBookingUrl": "",
+    "hotelBookingCode": "Sample Bar Mitzvah",
+    "hotelDeadline": "",
+    "hotelNotes": "",
+    "parkingInfo": "Free parking is available on-site at the venue.",
+    "airportName": "",
+    "airportCode": "",
+    "directionsUrl": "",
+    "dressCodMorning": "Business casual or synagogue-appropriate attire",
+    "dressCodEvening": "Cocktail attire. Comfortable footwear recommended for the lawn."
+  },
+  "about": {
+    "honoreeBlurb": "Alex is a curious, creative young person who loves music, books, and time with friends and family.\n\nThis section is sample text. Replace it in Admin → Settings with a few paragraphs about your honoree.",
+    "torahPortion": "",
+    "torahPortionDescription": ""
+  },
+  "reminders": [
+    {
+      "id": "reminder_1",
+      "label": "First Reminder",
+      "sendDate": "2026-07-01",
+      "enabled": true,
+      "description": "Friendly first reminder — 2 weeks before RSVP deadline"
+    },
+    {
+      "id": "reminder_2",
+      "label": "Final Reminder",
+      "sendDate": "2026-07-15",
+      "enabled": true,
+      "description": "Final reminder — RSVP deadline day"
+    }
+  ],
+  "preEventUpdates": [
+    {
+      "id": "update_1",
+      "label": "Pre-Event Logistics Email",
+      "daysBeforeEvent": 5,
+      "enabled": true,
+      "description": "Sends 5 days before the event — venue details, parking, dress code reminder",
+      "applyToEventIds": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": "update_2",
+      "label": "Day-Before Reminder",
+      "daysBeforeEvent": 1,
+      "enabled": false,
+      "description": "Optional reminder the day before — enable if you want a final heads-up sent to guests",
+      "applyToEventIds": [
+        3
+      ]
+    }
+  ],
+  "testRun": {
+    "_comment": "Send test invitations to specific email addresses — one per event combination — before sending to real guests.",
+    "enabled": true,
+    "testCases": [
+      {
+        "id": "test_all",
+        "label": "All 4 Events",
+        "description": "Shabbat + Service + Party + Breakfast",
+        "events": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "sendTo": ""
+      },
+      {
+        "id": "test_sat_only",
+        "label": "Saturday Only (Service + Party)",
+        "description": "Service & Luncheon + Evening Party",
+        "events": [
+          2,
+          3
+        ],
+        "sendTo": ""
+      },
+      {
+        "id": "test_party_only",
+        "label": "Party Only",
+        "description": "Evening celebration only",
+        "events": [
+          3
+        ],
+        "sendTo": ""
+      },
+      {
+        "id": "test_weekend",
+        "label": "Full Weekend (No Shabbat Dinner)",
+        "description": "Service + Party + Breakfast",
+        "events": [
+          2,
+          3,
+          4
+        ],
+        "sendTo": ""
+      },
+      {
+        "id": "test_shabbat_party",
+        "label": "Shabbat + Party",
+        "description": "Friday dinner + Saturday evening",
+        "events": [
+          1,
+          3
+        ],
+        "sendTo": ""
+      },
+      {
+        "id": "custom",
+        "label": "Custom Combination",
+        "description": "Define your own set of events",
+        "events": [],
+        "sendTo": ""
+      }
+    ]
+  },
+  "saveTheDate": {
+    "subject": "Save the Date — Alex's Bar Mitzvah · August 22, 2026",
+    "previewText": "Mark your calendars for a very special occasion",
+    "openingLine": "We are thrilled to let you know that our son Alex will be celebrating his Bar Mitzvah on August 22, 2026. We would be so honored to have you join us for this milestone celebration.",
+    "closingLine": "Formal invitations with full details will follow soon. We can't wait to celebrate with you!",
+    "websiteUrl": "https://rsvp.example.com"
+  },
+  "emailTemplates": {
+    "invitation": {
+      "subject": "You're invited — Alex's Bar Mitzvah · August 22, 2026",
+      "previewText": "Please join us to celebrate a very special milestone",
+      "openingLine": "We are so pleased to invite you to celebrate with us as our son Alex becomes a Bar Mitzvah.",
+      "closingLine": "We hope you'll be able to join us for this very special day. Please RSVP using your personal link below."
+    },
+    "reminder": {
+      "subject": "Friendly reminder — Please RSVP for Alex's Bar Mitzvah",
+      "previewText": "We'd love to know if you can join us",
+      "openingLine": "We just wanted to send a friendly reminder that the RSVP deadline for Alex's Bar Mitzvah is coming up.",
+      "closingLine": "If you've already responded, thank you! If not, we'd love to hear from you."
+    },
+    "preEvent": {
+      "subject": "We can't wait to see you — Alex's Bar Mitzvah is almost here!",
+      "previewText": "Everything you need to know for the weekend",
+      "openingLine": "We are so excited to celebrate with you in just a few days! Here are all the details you'll need.",
+      "closingLine": "If you have any questions, please don't hesitate to reach out. We can't wait to see you there!",
+      "groups": [
+        {
+          "label": "Full Weekend",
+          "ifAnyEventIn": [
+            3,
+            4
+          ],
+          "subject": "We can't wait to see you — Alex's Bar Mitzvah is almost here!",
+          "body": ""
+        },
+        {
+          "label": "Service Only",
+          "ifAnyEventIn": [
+            1,
+            2
+          ],
+          "subject": "We can't wait to see you — Alex's Bar Mitzvah is almost here!",
+          "body": ""
+        }
+      ]
+    },
+    "confirmation": {
+      "subject": "Your RSVP is confirmed — Alex's Bar Mitzvah",
+      "previewText": "Thank you for your response",
+      "attendingMessage": "We received your RSVP and we're so glad you'll be joining us to celebrate Alex's Bar Mitzvah.",
+      "declinedMessage": "We received your RSVP and we're sorry you won't be able to join us. We'll be thinking of you on this special day."
+    }
+  }
+}

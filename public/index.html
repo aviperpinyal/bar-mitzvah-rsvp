@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex Sample · Bar Mitzvah · August 22, 2026</title>
+  <meta name="description" content="You are invited to celebrate the Bar Mitzvah of Alex Sample on August 22, 2026.">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════════ -->
+  <nav id="navbar">
+    <div class="nav-logo">
+      <img src="/logo.png" alt="AS monogram" class="nav-logo-img">
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="#details">The Celebration</a></li>
+      <li><a href="#rsvp">RSVP</a></li>
+      <li><a href="#travel">Travel</a></li>
+    </ul>
+
+    <div class="nav-cta">
+      <a href="#rsvp" class="btn btn-primary" style="padding:10px 24px;font-size:11px;">RSVP Now</a>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════ -->
+  <section id="hero">
+    <canvas id="stars" aria-hidden="true"></canvas>
+
+    <div class="hero-content">
+
+      <!-- AS Monogram -->
+      <div class="hero-monogram">
+        <img src="/logo.png" alt="AS monogram for Alex Sample" class="hero-logo-img">
+      </div>
+
+      <p class="hero-eyebrow" id="hero-eyebrow">You are invited to celebrate</p>
+
+      <h1 class="hero-title">
+        <span id="hero-subtitle">the Bar Mitzvah of</span><br>
+        <em id="hero-name">Alex Sample</em>
+      </h1>
+
+      <div class="hero-divider" aria-hidden="true">
+        <div class="hero-divider-line"></div>
+        <span class="hero-divider-star">✦</span>
+        <div class="hero-divider-line"></div>
+      </div>
+
+      <p class="hero-date">Saturday · August 22 · 2026</p>
+
+      <div class="hero-actions">
+        <a href="#rsvp" class="btn btn-primary">RSVP Now</a>
+        <a href="#details" class="btn btn-dark">View Details</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M10 4v12M4 10l6 6 6-6"/>
+      </svg>
+    </div>
+
+    <!-- ── Forest + campfire (cropped from reference art) ── -->
+    <div class="hero-forest" aria-hidden="true"></div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════
+       EVENT DETAILS
+  ══════════════════════════════════════════ -->
+  <div class="gem-divider" aria-hidden="true">
+    <div class="gem-divider-line"></div>
+    <span class="gem-divider-gem">◆</span>
+    <div class="gem-divider-line"></div>
+  </div>
+
+  <section id="details" class="section">
+    <div class="container">
+      <div class="section-header section-center">
+        <p class="eyebrow">Mark Your Calendar</p>
+        <h2 class="section-title">The Celebration</h2>
+        <p>Join us as Alex becomes a Bar Mitzvah on August 22, 2026.</p>
+      </div>
+
+      <!-- Event cards injected by script.js -->
+      <div class="event-cards" id="event-cards">
+        <!-- Loading state -->
+        <div class="event-card" style="grid-column:1/-1;text-align:center;padding:48px;opacity:0.4;">
+          <p style="font-style:italic;font-family:'Cormorant Garamond',serif;font-size:22px;">Loading event details…</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════
+       RSVP
+  ══════════════════════════════════════════ -->
+  <section id="rsvp" class="section">
+    <div class="container">
+      <div class="section-header section-center">
+        <p class="eyebrow" id="rsvp-deadline-label">Kindly Reply By July 15, 2026</p>
+        <h2 class="section-title" style="color:#fff;">Will You Join Us?</h2>
+        <p id="rsvp-intro-text">Each guest receives a personal RSVP link by email. Please use your link to let us know which events you'll be attending.</p>
+      </div>
+
+      <div class="rsvp-wrap">
+        <!-- RSVP closed message (shown if rsvpOpen: false) -->
+        <div class="rsvp-closed" id="rsvp-closed" style="display:none;">
+          <div class="rsvp-closed-icon">✦</div>
+          <h3 id="rsvp-closed-msg"></h3>
+        </div>
+
+        <!-- Personal link prompt (default when RSVP is open) -->
+        <div id="rsvp-link-prompt">
+          <div class="rsvp-link-box">
+            <div class="rsvp-link-icon">✉</div>
+            <h3 class="rsvp-link-title">Check Your Inbox</h3>
+            <p class="rsvp-link-sub">
+              Your personal invitation includes a unique link to RSVP for your specific events.
+            </p>
+            <div class="rsvp-link-divider"></div>
+            <p class="rsvp-link-contact">
+              Need help? Reach <strong id="contact-name">Jordan &amp; Taylor</strong> at
+              <a id="contact-email" href="mailto:jordan@example.com">jordan@example.com</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════
+       TRAVEL & LOGISTICS
+  ══════════════════════════════════════════ -->
+  <section id="travel" class="section">
+    <div class="container">
+      <div class="section-header section-center">
+        <p class="eyebrow">Getting Here</p>
+        <h2 class="section-title">Travel & Logistics</h2>
+        <p>Everything you need to plan your trip and make the most of the weekend.</p>
+      </div>
+
+      <div class="travel-grid" id="travel-grid">
+        <!-- Populated from /api/site-config -->
+        <div class="travel-card">
+          <div class="travel-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h4a3 3 0 010 6H9"/></svg>
+          </div>
+          <h3>Parking</h3>
+          <p id="parking-text">Free parking is available on-site at the venue.</p>
+        </div>
+
+        <div class="travel-card">
+          <div class="travel-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <h3>Getting Here</h3>
+          <p id="airport-text">
+            <strong>Congregation Shalom</strong><br>
+            123 Main St, Springfield, IL 62701<br><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Congregation+Shalom+123+Main+St+Springfield+IL+62701" target="_blank" rel="noopener">Open in Google Maps →</a>
+          </p>
+        </div>
+
+        <div class="travel-card">
+          <div class="travel-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><path d="M4 7l8 5-8 5V7z"/><path d="M20 7l-8 5 8 5V7z"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <h3>Dress Code</h3>
+          <p id="dresscode-text"><strong>Morning Service:</strong> Business casual or synagogue-appropriate attire.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════ -->
+  <footer>
+    <div class="footer-monogram">
+      <img src="/logo.png" alt="" aria-hidden="true" class="footer-logo-img">
+    </div>
+
+    <p class="footer-name">Alex Sample</p>
+    <p class="footer-date">August 22 · 2026</p>
+
+    <ul class="footer-links">
+      <li><a href="#details">The Celebration</a></li>
+      <li><a href="#rsvp">RSVP</a></li>
+      <li><a href="#travel">Travel</a></li>
+    </ul>
+
+    <p class="footer-copy" id="footer-copy">Sample Family &nbsp;✦&nbsp; 2026</p>
+  </footer>
+
+
+  <script src="script.js"></script>
+</body>
+</html>

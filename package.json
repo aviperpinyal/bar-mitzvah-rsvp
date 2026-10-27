@@ -1,0 +1,26 @@
+{
+  "name": "alex-bar-mitzvah",
+  "version": "1.0.0",
+  "description": "Bar Mitzvah celebration website for Alex Sample — August 22, 2026",
+  "main": "server.js",
+  "scripts": {
+    "start":           "node server.js",
+    "import-guests":   "node scripts/import-guests.js",
+    "send-invites":    "node scripts/send-invites.js",
+    "send-reminders":  "node scripts/send-reminders.js",
+    "send-update":     "node scripts/send-update.js",
+    "dry-run-invites": "node scripts/send-invites.js --dry-run",
+    "dry-run-remind":  "node scripts/send-reminders.js --dry-run"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.0",
+    "xlsx":       "^0.18.5"
+  },
+  "_notes": {
+    "server": "The web server (server.js) has zero npm dependencies — pure Node.js built-ins.",
+    "scripts": "nodemailer and xlsx are only needed for the email + import scripts in scripts/. Run: npm install"
+  }
+}

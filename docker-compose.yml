@@ -1,0 +1,53 @@
+# ── Alex's Bar Mitzvah — Docker Compose ─────────────────────────────────────
+#
+# Start:   docker-compose up -d
+# Stop:    docker-compose down
+# Rebuild: docker-compose up -d --build
+# Logs:    docker-compose logs -f
+#
+# The 'data' folder on the HOST machine is mounted into the container.
+# This means guest data, RSVPs, and config are never lost when you
+# update the container — they live safely on the host disk.
+
+services:
+  web:
+    build: .
+    image: bar-mitzvah-rsvp:latest
+    container_name: bar-mitzvah-rsvp
+    restart: unless-stopped
+
+    ports:
+      - "10003:10003"      # host:container — matches your nginx proxy setup
+
+    environment:
+      # Required: set ADMIN_TOKEN in a .env file next to docker-compose.yml.
+      # See the .env instructions at the bottom of this file.
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+
+      # Optional: override the port inside the container
+      - PORT=10003
+
+    volumes:
+      # Mount the data folder from the host into the container.
+      # The host path is relative to this docker-compose.yml file.
+      # All RSVPs, guest lists, and config are stored here.
+      - ./data:/app/data
+
+      # Mount the scripts folder so you can run import/email scripts
+      # directly on the host without rebuilding the container:
+      #   docker-compose exec web node scripts/import-guests.js
+      - ./scripts:/app/scripts
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:10003/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+# ── .env file (create this on your server, don't commit it) ──────────────────
+# Create a file called .env next to docker-compose.yml with:
+#
+#   ADMIN_TOKEN=your_strong_password_here
+#
+# Docker Compose reads it automatically. Never commit .env to GitHub.

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guests — Alex's Bar Mitzvah</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --crimson: #6B0E05; --red: #9E1F10; --orange: #C83A18;
+      --amber: #D96818;   --gold: #EAAC2C; --sky: #5AABD8;
+      --dark: #0E0606; --ivory: #FDF5F0; --white: #fff;
+      --text: #1A0805; --mid: #5A3020; --light: #9B7060;
+      --grad: linear-gradient(135deg, #C83A18 0%, #D96818 50%, #EAAC2C 100%);
+      --radius: 12px; --shadow: 0 2px 16px rgba(0,0,0,0.08);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #F5EDE6; color: var(--text); min-height: 100vh; }
+
+    /* ── Login screen ── */
+    #login-screen {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(160deg, #0E0606, #280C0A);
+    }
+    .login-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 48px 44px;
+      width: 380px;
+      backdrop-filter: blur(8px);
+      text-align: center;
+    }
+    .login-box h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px; font-weight: 300; font-style: italic;
+      color: #fff; margin-bottom: 6px;
+    }
+    .login-box p { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 32px; }
+    .login-box input {
+      width: 100%; padding: 14px 16px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 15px;
+      outline: none; transition: border-color 0.2s;
+      text-align: center; letter-spacing: 3px;
+      margin-bottom: 16px;
+    }
+    .login-box input:focus { border-color: var(--orange); }
+    .login-box input::placeholder { letter-spacing: 1px; color: rgba(255,255,255,0.25); }
+    .login-btn {
+      width: 100%; padding: 14px;
+      background: var(--grad); border: none; border-radius: 50px;
+      color: #fff; font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 600; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(200,58,24,0.4);
+    }
+    .login-error { margin-top: 14px; font-size: 13px; color: var(--gold); display: none; }
+
+    /* ── Dashboard ── */
+    #dashboard { display: none; }
+    #dashboard.visible { display: block; }
+
+    header {
+      background: var(--dark);
+      padding: 16px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 300; font-style: italic;
+      color: rgba(255,255,255,0.85);
+    }
+    header h1 span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+    .btn-sm {
+      padding: 8px 18px; border-radius: 50px; font-size: 12px;
+      font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; border: none; transition: opacity 0.2s;
+      text-decoration: none; display: inline-flex; align-items: center;
+    }
+    .btn-sm:hover { opacity: 0.85; }
+    .btn-add    { background: var(--grad); color: #fff; }
+    .btn-nav    { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); }
+    .btn-logout { background: rgba(255,255,255,0.1);  color: rgba(255,255,255,0.5); }
+
+    main { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+    /* ── Summary chips ── */
+    .summary-row {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px;
+    }
+    .sum-chip {
+      background: #fff; border-radius: 10px; padding: 14px 20px;
+      box-shadow: var(--shadow); text-align: center; min-width: 130px;
+    }
+    .sum-chip .sum-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px; font-weight: 300; line-height: 1;
+      background: var(--grad); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 4px;
+    }
+    .sum-chip .sum-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--light);
+    }
+
+    /* ── Filters + search ── */
+    .toolbar {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .toolbar h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px; font-weight: 300; font-style: italic; color: var(--dark);
+      flex: 1;
+    }
+    .filter-btn {
+      padding: 7px 14px; border-radius: 50px; font-size: 11px;
+      font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
+      cursor: pointer; border: 1.5px solid #E0D0C8;
+      background: #fff; color: var(--mid);
+      transition: all 0.15s;
+    }
+    .filter-btn.active { background: var(--grad); color: #fff; border-color: transparent; }
+    .search-box {
+      padding: 9px 16px; border-radius: 50px;
+      border: 1px solid #E0D0C8; background: #fff;
+      font-family: 'Inter', sans-serif; font-size: 13px;
+      width: 220px; outline: none;
+    }
+    .search-box:focus { border-color: var(--orange); }
+
+    /* ── Table ── */
+    .table-wrap { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); overflow: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      padding: 13px 14px; text-align: left;
+      font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--light);
+      border-bottom: 1px solid #F0E0D8; white-space: nowrap;
+      background: var(--ivory);
+    }
+    tbody tr { border-bottom: 1px solid #F8EDE8; transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #FDF5F0; }
+    td { padding: 13px 14px; vertical-align: middle; }
+    .td-name { font-weight: 500; color: var(--dark); line-height: 1.3; }
+    .td-name small { display: block; font-weight: 400; font-size: 11px; color: var(--light); margin-top: 2px; }
+    .td-email { color: var(--mid); font-size: 12px; }
+    .td-count { text-align: center; font-weight: 600; color: var(--orange); }
+
+    /* ── Event pills ── */
+    .event-pills { display: flex; gap: 3px; flex-wrap: wrap; }
+    .pill {
+      display: inline-block; padding: 2px 7px; border-radius: 20px;
+      font-size: 10px; font-weight: 600; white-space: nowrap;
+    }
+    .pill-1 { background: #E8F0FB; color: #1A3A7A; }
+    .pill-2 { background: #FBF0E8; color: #7A3A1A; }
+    .pill-3 { background: #F0FBE8; color: #2E5A10; }
+    .pill-4 { background: #FBF8E8; color: #6B5A0A; }
+
+    /* ── Email status badges ── */
+    .email-status { display: flex; gap: 4px; flex-wrap: wrap; }
+    .em-badge {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 3px 8px; border-radius: 20px;
+      font-size: 10px; font-weight: 600;
+      cursor: default;
+    }
+    .em-sent    { background: #E8F5E9; color: #2E7D32; }
+    .em-unsent  { background: #F5F5F5; color: #BDBDBD; cursor: pointer; transition: all 0.15s; }
+    .em-unsent:hover  { background: #FFF3E0; color: #E65100; }
+    .em-sending { background: #FFF3E0; color: #E65100; }
+    .em-failed  { background: #FBE9E7; color: #B71C1C; cursor: pointer; }
+
+    /* ── RSVP status ── */
+    .rsvp-pill {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+    }
+    .rsvp-attending { background: #E8F5E9; color: #2E7D32; }
+    .rsvp-declined  { background: #FBE9E7; color: #B71C1C; }
+    .rsvp-partial   { background: #FFF3E0; color: #E65100; }
+    .rsvp-none      { background: #F5F5F5; color: #9E9E9E; }
+
+    /* ── Actions ── */
+    .td-actions { display: flex; gap: 6px; align-items: center; }
+    .btn-action {
+      background: none; border: none; cursor: pointer;
+      font-size: 15px; padding: 4px 7px;
+      border-radius: 6px; transition: background 0.15s, color 0.15s;
+      color: var(--light);
+    }
+    .btn-action:hover { background: #F0E0D8; color: var(--red); }
+    .btn-action.send { color: #5A9E2E; }
+    .btn-action.send:hover { background: #E8F5E9; color: #2E7D32; }
+
+    .loading { text-align: center; padding: 48px; color: var(--light); font-style: italic; }
+    .empty   { text-align: center; padding: 48px; color: var(--light); }
+    .empty h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; font-style: italic; margin-bottom: 8px; }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      background: #1A0805; color: #fff; padding: 12px 24px;
+      border-radius: 50px; font-size: 13px; font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap;
+      z-index: 999;
+    }
+    #toast.visible { opacity: 1; }
+    #toast.error   { background: #B71C1C; }
+
+    /* ── Add Guest Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100; padding: 24px;
+      opacity: 0; visibility: hidden; transition: all 0.2s;
+    }
+    .modal-overlay.open { opacity: 1; visibility: visible; }
+    .modal {
+      background: #fff; border-radius: 16px;
+      padding: 36px; width: 100%; max-width: 500px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      transform: translateY(16px); transition: transform 0.2s;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 300; font-style: italic;
+      color: var(--dark); margin-bottom: 24px;
+    }
+    .form-row { margin-bottom: 16px; }
+    .form-row label {
+      display: block; font-size: 11px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--light); margin-bottom: 6px;
+    }
+    .form-row input, .form-row select, .form-row textarea {
+      width: 100%; padding: 10px 14px;
+      border: 1px solid #E0D0C8; border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: 14px;
+      outline: none; transition: border-color 0.2s; color: var(--text);
+    }
+    .form-row input:focus, .form-row select:focus { border-color: var(--orange); }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .events-check { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+    .evt-label {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 20px;
+      border: 1.5px solid #E0D0C8; cursor: pointer;
+      font-size: 12px; font-weight: 500; color: var(--mid);
+      transition: all 0.15s; user-select: none;
+    }
+    .evt-label input { display: none; }
+    .evt-label.checked { border-color: var(--orange); background: #FFF3E0; color: var(--orange); }
+    .modal-footer {
+      display: flex; gap: 12px; justify-content: flex-end;
+      margin-top: 28px;
+    }
+    .btn-cancel {
+      padding: 11px 22px; border-radius: 50px; font-size: 13px;
+      font-weight: 600; border: 1.5px solid #E0D0C8; background: #fff;
+      cursor: pointer; color: var(--mid);
+    }
+    .btn-save {
+      padding: 11px 28px; border-radius: 50px; font-size: 13px;
+      font-weight: 600; border: none; background: var(--grad);
+      color: #fff; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(200,58,24,0.3);
+    }
+    .modal-error { font-size: 12px; color: var(--red); margin-top: 12px; display: none; }
+
+    @media (max-width: 700px) {
+      .summary-row { gap: 8px; }
+      .sum-chip { min-width: 100px; padding: 12px 14px; }
+      .toolbar { gap: 8px; }
+      .search-box { width: 100%; }
+      .form-row-2 { grid-template-columns: 1fr; }
+    }
+
+    /* ── Send Invites Modal ── */
+    #invite-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 300; padding: 16px;
+      opacity: 0; visibility: hidden; transition: all 0.2s;
+    }
+    #invite-modal-overlay.open { opacity: 1; visibility: visible; }
+    #invite-modal {
+      background: #fff; border-radius: 18px;
+      width: 100%; max-width: 860px; max-height: 92vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 24px 72px rgba(0,0,0,0.28);
+      transform: translateY(18px); transition: transform 0.2s;
+      overflow: hidden;
+    }
+    #invite-modal-overlay.open #invite-modal { transform: translateY(0); }
+    #invite-modal-inner { flex: 1; overflow-y: auto; padding: 32px 36px 0; }
+    #invite-modal h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 300; font-style: italic;
+      color: var(--dark); margin-bottom: 20px;
+    }
+    .invite-toolbar {
+      display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;
+    }
+    .invite-quick-btn {
+      padding: 6px 14px; border-radius: 20px; font-size: 11px;
+      font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
+      cursor: pointer; border: 1.5px solid #E0D0C8;
+      background: #fff; color: var(--mid); transition: all 0.15s; white-space: nowrap;
+    }
+    .invite-quick-btn:hover, .invite-quick-btn.active {
+      background: var(--grad); color: #fff; border-color: transparent;
+    }
+    .invite-table-wrap {
+      border: 1px solid #F0E0D8; border-radius: 10px;
+      overflow: auto; max-height: 260px; margin-bottom: 8px;
+    }
+    #invite-tbody tr { cursor: pointer; transition: background 0.1s; }
+    #invite-tbody tr.invite-row-selected { background: #FFF8F0; }
+    #invite-tbody tr:hover { background: #FDF5F0; }
+    .invite-count-info {
+      font-size: 12px; color: var(--light); margin-bottom: 18px; height: 18px;
+    }
+    .invite-options {
+      background: var(--ivory); border-radius: 10px;
+      padding: 16px 20px; margin-bottom: 6px;
+    }
+    .invite-options-title {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--light); margin-bottom: 12px;
+    }
+    .invite-options-row {
+      display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-end;
+    }
+    .invite-opt-field label:first-child {
+      display: block; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--light); margin-bottom: 6px;
+    }
+    .invite-opt-field input[type=number] {
+      padding: 8px 12px; border: 1px solid #E0D0C8; border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: 13px; outline: none;
+    }
+    .invite-opt-field input[type=number]:focus { border-color: var(--orange); }
+    .invite-toggle-row {
+      display: flex; align-items: center; gap: 10px; margin-top: 2px;
+    }
+    .invite-toggle-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--orange); cursor: pointer; }
+    .invite-toggle-label { font-size: 13px; color: var(--mid); cursor: pointer; }
+    .invite-warning {
+      margin-top: 12px; font-size: 12px; color: var(--amber);
+      background: rgba(234,172,44,0.08); border-radius: 6px;
+      padding: 8px 12px; line-height: 1.5;
+    }
+    /* Progress panel */
+    #invite-progress { padding: 0 4px; }
+    .invite-prog-header {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 10px;
+    }
+    .invite-prog-header h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 300; font-style: italic; color: var(--dark);
+    }
+    #invite-prog-text { font-size: 13px; color: var(--light); }
+    .invite-prog-track {
+      height: 8px; background: #F0E0D8; border-radius: 4px;
+      overflow: hidden; margin-bottom: 8px;
+    }
+    #invite-prog-bar {
+      height: 100%; width: 0%; background: var(--grad);
+      border-radius: 4px; transition: width 0.4s;
+    }
+    #invite-prog-current { font-size: 13px; color: var(--mid); min-height: 18px; margin-bottom: 6px; }
+    #invite-prog-stats { font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 14px; }
+    #invite-prog-log {
+      max-height: 220px; overflow-y: auto;
+      border: 1px solid #F0E0D8; border-radius: 8px;
+      padding: 10px 14px; font-size: 12px; line-height: 1.8;
+    }
+    .invite-log-row.sent    { color: #2E7D32; }
+    .invite-log-row.failed  { color: #B71C1C; }
+    .invite-log-row.skipped { color: #9E9E9E; }
+    /* Footer */
+    .invite-footer {
+      display: flex; gap: 12px; justify-content: flex-end;
+      padding: 20px 36px; border-top: 1px solid #F0E0D8;
+      background: #fff; flex-shrink: 0;
+    }
+    #invite-send-btn {
+      padding: 11px 28px; border-radius: 50px; font-size: 13px;
+      font-weight: 600; border: none; background: var(--grad);
+      color: #fff; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(200,58,24,0.3); transition: opacity 0.2s;
+    }
+    #invite-send-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+
+    /* ── Sheet Sync Modal ── */
+    #sync-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; padding: 24px;
+      opacity: 0; visibility: hidden; transition: all 0.2s;
+    }
+    #sync-modal-overlay.open { opacity: 1; visibility: visible; }
+    #sync-modal {
+      background: #fff; border-radius: 16px;
+      padding: 36px; width: 100%; max-width: 600px; max-height: 82vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      transform: translateY(16px); transition: transform 0.2s;
+    }
+    #sync-modal-overlay.open #sync-modal { transform: translateY(0); }
+    #sync-modal h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 300; font-style: italic;
+      color: var(--dark); margin-bottom: 6px;
+    }
+    #sync-modal .sync-sub { font-size: 13px; color: var(--light); margin-bottom: 24px; }
+    .sync-section { margin-bottom: 22px; }
+    .sync-section-title {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px;
+      border-bottom: 1px solid #F0E0D8;
+    }
+    .sync-section-title.added   { color: #2E7D32; }
+    .sync-section-title.changed { color: var(--orange); }
+    .sync-section-title.ok      { color: var(--light); }
+    .sync-item {
+      padding: 10px 14px; border-radius: 8px; margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .sync-item.new      { background: #E8F5E9; color: #1B5E20; }
+    .sync-item.modified { background: #FFF3E0; color: #BF360C; }
+    .sync-item .sync-name   { font-weight: 600; margin-bottom: 2px; }
+    .sync-item .sync-email  { font-size: 11px; opacity: 0.7; }
+    .sync-item .sync-detail { font-size: 11px; margin-top: 4px; opacity: 0.8; }
+    .sync-empty { font-size: 13px; color: var(--light); font-style: italic; }
+    .sync-footer {
+      display: flex; gap: 12px; justify-content: flex-end;
+      margin-top: 28px; padding-top: 20px;
+      border-top: 1px solid #F0E0D8;
+    }
+    .btn-sync-apply {
+      padding: 11px 28px; border-radius: 50px; font-size: 13px;
+      font-weight: 600; border: none;
+      background: linear-gradient(135deg,#2E7D32,#43A047);
+      color: #fff; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(46,125,50,0.3);
+    }
+    .btn-sync-apply:disabled { opacity: 0.5; cursor: not-allowed; }
+    .sync-loading { text-align: center; padding: 40px 0; color: var(--light); font-style: italic; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Login Screen ── -->
+  <div id="login-screen" style="display:none">
+    <div class="login-box">
+      <h1>Guest Dashboard</h1>
+      <p>Alex Sample · Bar Mitzvah · August 22, 2026</p>
+      <input type="password" id="token-input" placeholder="Enter admin token" autocomplete="off">
+      <button class="login-btn" id="login-btn">Sign In</button>
+      <p class="login-error" id="login-error">Incorrect token. Please try again.</p>
+    </div>
+  </div>
+
+  <!-- ── Dashboard ── -->
+  <div id="dashboard">
+    <header>
+      <h1>Alex's Bar Mitzvah &nbsp;<span>Guest List</span></h1>
+      <div class="header-actions">
+        <button class="btn-sm btn-add" id="add-guest-btn">+ Add Guest</button>
+        <button class="btn-sm" id="send-invites-btn" style="background:rgba(46,125,50,0.18);color:#2E7D32;border:1px solid rgba(46,125,50,0.3);">✉ Send Invites</button>
+        <button class="btn-sm" id="sheet-sync-btn" style="background:rgba(90,171,216,0.18);color:#5AABD8;border:1px solid rgba(90,171,216,0.3);">⟳ Sync Sheet</button>
+        <button class="btn-sm btn-nav" id="export-btn">↓ Export</button>
+        <label class="btn-sm btn-nav" id="import-label" style="cursor:pointer;">↑ Import<input type="file" id="import-input" accept=".csv" style="display:none;"></label>
+        <a href="/admin" class="btn-sm btn-nav">📋 RSVPs</a>
+        <a href="/settings" class="btn-sm btn-nav">⚙ Settings</a>
+        <button class="btn-sm btn-logout" id="logout-btn">Sign Out</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Summary chips -->
+      <div class="summary-row" id="summary-row">
+        <div class="sum-chip"><div class="sum-val" id="s-total">—</div><div class="sum-label">Total Guests</div></div>
+        <div class="sum-chip"><div class="sum-val" id="s-std-sent">—</div><div class="sum-label">Save-the-Date Sent</div></div>
+        <div class="sum-chip"><div class="sum-val" id="s-inv-sent">—</div><div class="sum-label">Invites Sent</div></div>
+        <div class="sum-chip"><div class="sum-val" id="s-rsvped">—</div><div class="sum-label">RSVPed</div></div>
+        <div class="sum-chip"><div class="sum-val" id="s-pax">—</div><div class="sum-label">Total Guests (pax)</div></div>
+      </div>
+
+      <!-- Filter + search bar -->
+      <div class="toolbar">
+        <h2 id="list-title">All Guests</h2>
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="no-std">No Save-the-Date</button>
+        <button class="filter-btn" data-filter="no-invite">No Invite</button>
+        <button class="filter-btn" data-filter="no-rsvp">No RSVP</button>
+        <input class="search-box" id="search" placeholder="Search name or email…">
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <div class="loading" id="table-loading">Loading guests…</div>
+        <table id="guest-table" style="display:none;">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th style="text-align:center">Pax</th>
+              <th style="text-align:center">Kids</th>
+              <th>Events</th>
+              <th>Emails Sent</th>
+              <th>RSVP Status</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="guest-body"></tbody>
+        </table>
+        <div class="empty" id="table-empty" style="display:none;">
+          <h3>No guests found</h3>
+          <p>Try adjusting your filter or search.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ── Add Guest Modal ── -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <h2>Add New Guest</h2>
+      <div class="form-row-2">
+        <div class="form-row">
+          <label>First Name</label>
+          <input type="text" id="m-first" placeholder="e.g. Sarah">
+        </div>
+        <div class="form-row">
+          <label>Last Name</label>
+          <input type="text" id="m-last" placeholder="e.g. Cohen">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Household / Display Name <span style="color:var(--red)">*</span></label>
+        <input type="text" id="m-household" placeholder="e.g. The Cohen Family">
+      </div>
+      <div class="form-row">
+        <label>Email Address <span style="color:var(--red)">*</span></label>
+        <input type="email" id="m-email" placeholder="sarah@example.com">
+      </div>
+      <div class="form-row-2">
+        <div class="form-row">
+          <label>Number of Guests</label>
+          <input type="number" id="m-count" value="1" min="1" max="20">
+        </div>
+        <div class="form-row">
+          <label>Kids (Hoodies)</label>
+          <input type="number" id="m-kids" value="0" min="0" max="20">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Internal Notes</label>
+        <input type="text" id="m-notes" placeholder="Optional">
+      </div>
+      <div class="form-row">
+        <label>Invited Events <span style="color:var(--red)">*</span></label>
+        <div class="events-check" id="modal-events"></div>
+      </div>
+      <p class="modal-error" id="modal-error"></p>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="modal-cancel">Cancel</button>
+        <button class="btn-save"   id="modal-save">Add Guest</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Send Invites Modal ── -->
+  <div id="invite-modal-overlay">
+    <div id="invite-modal">
+      <div id="invite-modal-inner">
+        <h2 id="invite-modal-title">Send Invitations</h2>
+
+        <!-- Email type selector -->
+        <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <label style="font-size:12px;font-weight:600;letter-spacing:0.5px;color:var(--light);white-space:nowrap;">Email Type</label>
+          <select id="invite-email-type" style="flex:1;min-width:220px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;color:var(--dark);background:#fff;cursor:pointer;">
+            <option value="invite">Initial Invite</option>
+            <option value="reminder">1st RSVP Reminder</option>
+            <option value="finalReminder">Final RSVP Reminder</option>
+            <option value="preEvent">Pre-Event Details</option>
+          </select>
+        </div>
+
+        <!-- Recipient selection (hidden during job) -->
+        <div id="invite-selection-panel">
+          <div class="invite-toolbar">
+            <button class="invite-quick-btn active" id="inv-btn-unsent" data-select="unsent">Unsent Only</button>
+            <button class="invite-quick-btn" id="inv-btn-all" data-select="all">Select All</button>
+            <button class="invite-quick-btn" id="inv-btn-none" data-select="none">None</button>
+            <input type="text" id="invite-search" placeholder="Search name or email…" class="search-box" style="flex:1;min-width:160px;">
+          </div>
+          <div class="invite-table-wrap">
+            <table width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;border-collapse:collapse;">
+              <thead>
+                <tr style="background:var(--ivory);">
+                  <th style="padding:9px 12px;width:36px;text-align:center;font-size:10px;font-weight:600;letter-spacing:1px;color:var(--light);border-bottom:1px solid #F0E0D8;">☐</th>
+                  <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:600;letter-spacing:1px;color:var(--light);border-bottom:1px solid #F0E0D8;">Name</th>
+                  <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:600;letter-spacing:1px;color:var(--light);border-bottom:1px solid #F0E0D8;">Email</th>
+                  <th style="padding:9px 12px;text-align:left;font-size:10px;font-weight:600;letter-spacing:1px;color:var(--light);border-bottom:1px solid #F0E0D8;">Events</th>
+                  <th id="invite-status-col-header" style="padding:9px 12px;text-align:left;font-size:10px;font-weight:600;letter-spacing:1px;color:var(--light);border-bottom:1px solid #F0E0D8;">Invite Sent</th>
+                </tr>
+              </thead>
+              <tbody id="invite-tbody"></tbody>
+            </table>
+          </div>
+          <div id="invite-count-info" class="invite-count-info">Loading…</div>
+
+          <!-- Options -->
+          <div class="invite-options">
+            <div class="invite-options-title">Send Options</div>
+            <div class="invite-options-row">
+              <div class="invite-opt-field">
+                <label>Delay between emails</label>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <input type="number" id="invite-delay" value="1000" min="0" max="30000" step="100" style="width:90px;">
+                  <span style="font-size:12px;color:var(--light);">ms</span>
+                </div>
+              </div>
+              <div class="invite-opt-field">
+                <label>Limit this run to</label>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <input type="number" id="invite-limit" placeholder="all" min="1" max="500" style="width:80px;">
+                  <span style="font-size:12px;color:var(--light);">guests max</span>
+                </div>
+              </div>
+              <div class="invite-opt-field">
+                <label>Dry run</label>
+                <div class="invite-toggle-row">
+                  <input type="checkbox" id="invite-dryrun">
+                  <label class="invite-toggle-label" for="invite-dryrun">Simulate — no emails sent</label>
+                </div>
+              </div>
+            </div>
+            <div class="invite-warning">
+              ⚠ Gmail allows ~500 emails/day. Keep delay ≥ 500 ms to avoid rate limiting. Use <em>Limit this run</em> to send in controlled batches and review results before continuing.
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress panel (shown while/after job runs) -->
+        <div id="invite-progress" style="display:none;">
+          <div class="invite-prog-header">
+            <h3 id="invite-prog-title">Sending…</h3>
+            <span id="invite-prog-text"></span>
+          </div>
+          <div class="invite-prog-track"><div id="invite-prog-bar"></div></div>
+          <div id="invite-prog-current"></div>
+          <div id="invite-prog-stats"></div>
+          <div id="invite-prog-log"></div>
+        </div>
+      </div>
+
+      <!-- Footer (always visible) -->
+      <div class="invite-footer">
+        <button class="btn-cancel" id="invite-cancel">Cancel</button>
+        <button id="invite-send-btn" disabled>Select Recipients First</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Sheet Sync Modal ── -->
+  <div id="sync-modal-overlay">
+    <div id="sync-modal">
+      <h2>Sync from Google Sheets</h2>
+      <p class="sync-sub" id="sync-sub">Checking the guest sheet for changes…</p>
+
+      <div id="sync-body">
+        <div class="sync-loading">Fetching sheet data…</div>
+      </div>
+
+      <div class="sync-footer">
+        <button class="btn-cancel" id="sync-cancel">Cancel</button>
+        <button class="btn-sync-apply" id="sync-apply" disabled>Apply Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toast ── -->
+  <div id="toast"></div>
+
+  <script src="guests.js"></script>
+</body>
+</html>

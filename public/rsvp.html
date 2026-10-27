@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your RSVP — Alex's Bar Mitzvah</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── Tokens ── */
+    :root {
+      --terra:   #B85C38;
+      --terra2:  #C87040;
+      --dark:    #2C1810;
+      --mid:     #8B6050;
+      --muted:   #C4A898;
+      --cream:   #F5EDE6;
+      --card:    #FDFAF7;
+      --white:   #FFFFFF;
+      --radius:  6px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      background: linear-gradient(160deg, #0E0606 0%, #1A0906 60%, #241008 100%);
+      min-height: 100vh;
+    }
+
+    /* ── Starfield ── */
+    #stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    /* ── Page shell ── */
+    .page {
+      position: relative; z-index: 1;
+      padding: 40px 16px 72px;
+    }
+
+    /* ── Invitation card ── */
+    .page-card {
+      background: var(--cream);
+      border-radius: 10px;
+      border: 1px solid rgba(184,92,56,0.30);
+      box-shadow: 0 40px 120px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.04);
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 48px 40px 56px;
+      overflow: hidden;
+    }
+
+    /* ── Logo ── */
+    .rsvp-logo {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .rsvp-logo-img {
+      height: 120px;
+      width: auto;
+      display: inline-block;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 28px 0;
+    }
+    .divider-line { flex: 1; height: 1px; }
+    .divider-line:first-child { background: linear-gradient(to right, transparent, rgba(184,92,56,0.3)); }
+    .divider-line:last-child  { background: linear-gradient(to right, rgba(184,92,56,0.3), transparent); }
+    .divider-gem  { color: var(--terra); font-size: 10px; opacity: 0.7; flex-shrink: 0; line-height: 1; }
+
+    /* ── Loading / error states ── */
+    .state-loading, .state-error {
+      text-align: center;
+      padding: 80px 32px;
+      color: rgba(255,255,255,0.5);
+    }
+    .state-loading p {
+      font-size: 20px; font-style: italic; color: rgba(255,255,255,0.4);
+    }
+    .state-error h2 {
+      font-size: 32px; font-weight: 300; font-style: italic;
+      color: rgba(255,255,255,0.7); margin-bottom: 12px;
+    }
+    .state-error p { font-size: 15px; line-height: 1.6; font-family: 'Inter', sans-serif; }
+
+    /* ── Greeting ── */
+    .greeting { text-align: center; margin-bottom: 32px; }
+    .greeting-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 3.5px; text-transform: uppercase;
+      color: #9B7060; margin-bottom: 12px;
+    }
+    .greeting-name {
+      font-size: clamp(42px, 9vw, 64px);
+      font-weight: 400; font-style: italic;
+      color: var(--terra);
+      line-height: 1.05;
+      margin-bottom: 10px;
+    }
+    .greeting-sub {
+      font-size: 15px; font-style: italic;
+      color: var(--mid); line-height: 1.5;
+    }
+    .greeting-count {
+      margin-top: 8px;
+      font-size: 14px; font-style: italic;
+      color: var(--terra);
+    }
+
+    /* ── Update notice ── */
+    .update-notice {
+      background: rgba(184,92,56,0.08);
+      border: 1px solid rgba(184,92,56,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: var(--terra);
+      margin-bottom: 24px;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* ── Event cards ── */
+    .events-list {
+      display: flex; flex-direction: column; gap: 12px;
+      margin-bottom: 8px;
+    }
+    .event-rsvp-card {
+      background: var(--white);
+      border: 1px solid rgba(184,92,56,0.22);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .event-rsvp-card.attending-yes {
+      border-color: rgba(184,92,56,0.3);
+      box-shadow: 0 2px 16px rgba(184,92,56,0.1);
+    }
+    .event-rsvp-card.attending-no {
+      opacity: 0.65;
+    }
+
+    /* Status bar (ACCEPTED / DECLINED header) */
+    .card-status-bar {
+      padding: 9px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .status-accepted {
+      background: linear-gradient(135deg, var(--terra), var(--terra2));
+      color: #fff;
+    }
+    .status-declined {
+      background: #C4A898;
+      color: #fff;
+    }
+
+    /* Card body */
+    .card-body-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px 20px 16px;
+    }
+    .card-icon-circle {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: rgba(184,92,56,0.08);
+      border: 1px solid rgba(184,92,56,0.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--terra);
+    }
+    .card-icon-circle svg { width: 16px; height: 16px; }
+    .card-info { flex: 1; min-width: 0; }
+    .event-card-name {
+      font-size: 18px; font-weight: 400; font-style: italic;
+      color: var(--terra);
+      margin-bottom: 2px;
+    }
+    .event-venue-name {
+      font-size: 13px; font-weight: 500;
+      color: var(--dark);
+      font-family: 'Inter', sans-serif;
+      margin-bottom: 1px;
+    }
+    .event-addr {
+      font-size: 12px; color: var(--mid);
+      font-family: 'Inter', sans-serif;
+      margin-bottom: 8px;
+    }
+    .event-pills {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 6px;
+    }
+    .event-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px;
+      background: rgba(184,92,56,0.07);
+      border: 1px solid rgba(184,92,56,0.14);
+      border-radius: 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; color: var(--mid);
+    }
+
+    /* Guest count stepper */
+    .card-guest-count {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-top: 1px solid rgba(184,92,56,0.1);
+    }
+    .count-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 500;
+      color: var(--dark);
+    }
+    .count-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; color: var(--muted);
+      margin-top: 2px;
+    }
+    .count-stepper {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .stepper-btn {
+      width: 28px; height: 28px;
+      border: 1px solid rgba(184,92,56,0.3);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--terra);
+      font-size: 14px; line-height: 1;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .stepper-btn:hover { background: rgba(184,92,56,0.08); }
+    .stepper-val {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px; font-weight: 500;
+      color: var(--dark);
+      min-width: 24px; text-align: center;
+    }
+
+    /* Accept / Decline buttons */
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      padding: 0 20px 18px;
+    }
+    .attend-btn {
+      flex: 1;
+      padding: 10px 0;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .attend-btn:active { transform: scale(0.98); }
+    .attend-btn-yes {
+      background: linear-gradient(to right, #9E3A22, #C87040);
+      color: #fff;
+      flex: 1.6;
+    }
+    .attend-btn-yes:hover { opacity: 0.88; }
+    .attend-btn-no {
+      background: transparent;
+      color: var(--terra);
+      border: 1px solid rgba(184,92,56,0.35) !important;
+      flex: 1;
+    }
+    .attend-btn-no:hover { background: rgba(184,92,56,0.06); }
+
+    /* Change response link */
+    .card-change {
+      padding: 0 20px 14px;
+      text-align: center;
+    }
+    .change-response-btn {
+      background: none; border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px; color: var(--muted);
+      cursor: pointer; text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .change-response-btn:hover { color: var(--terra); }
+
+    /* ── Hoodie section ── */
+    #hoodie-section .section-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 8px;
+    }
+
+    /* ── Form cards ── */
+    .form-card {
+      background: var(--white);
+      border: 1px solid rgba(184,92,56,0.20);
+      border-radius: var(--radius);
+      padding: 20px 20px 16px;
+      margin-bottom: 12px;
+    }
+    .form-card-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px; font-weight: 500;
+      color: var(--dark); margin-bottom: 4px;
+    }
+    .form-card-label span { color: var(--terra); }
+    .form-card-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px; color: var(--muted);
+      margin-bottom: 12px; line-height: 1.5;
+    }
+    .form-card input,
+    .form-card textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(184,92,56,0.04);
+      border: 1px solid rgba(184,92,56,0.15);
+      border-radius: 10px;
+      color: var(--dark);
+      font-family: 'Inter', sans-serif; font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+    .form-card textarea { min-height: 90px; }
+    .form-card input:focus,
+    .form-card textarea:focus { border-color: var(--terra); }
+    .form-card input::placeholder,
+    .form-card textarea::placeholder { color: var(--muted); }
+
+    /* Small inline input (for hoodie sizes) */
+    .form-group { margin-bottom: 12px; }
+    .form-group label {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--mid); margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%; padding: 10px 14px;
+      background: rgba(184,92,56,0.04);
+      border: 1px solid rgba(184,92,56,0.15);
+      border-radius: 8px; color: var(--dark);
+      font-family: 'Inter', sans-serif; font-size: 13px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: var(--terra); }
+    .form-group input::placeholder { color: var(--muted); }
+
+    /* ── Submit ── */
+    .submit-wrap { margin-top: 28px; text-align: center; }
+    .submit-btn {
+      padding: 16px 64px;
+      background: var(--terra);
+      border: none; border-radius: 50px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px; font-weight: 600; letter-spacing: 2.5px;
+      text-transform: uppercase; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(184,92,56,0.35);
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    /* ── Error ── */
+    .form-error {
+      background: rgba(184,92,56,0.08);
+      border: 1px solid rgba(184,92,56,0.25);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; color: var(--terra);
+      margin-top: 14px; display: none;
+    }
+    .form-error.visible { display: block; }
+
+    /* ── Footer questions ── */
+    .rsvp-questions {
+      text-align: center;
+      margin-top: 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px; color: var(--muted);
+    }
+    .rsvp-questions a { color: var(--terra); text-decoration: none; }
+    .rsvp-questions a:hover { text-decoration: underline; }
+
+    /* ── Success state ── */
+    .state-success { padding: 0; }
+    .success-inner { text-align: center; padding: 8px 0 24px; }
+    .success-title {
+      font-size: clamp(42px, 9vw, 60px); font-weight: 400; font-style: italic;
+      color: var(--terra); margin-bottom: 10px; line-height: 1.1;
+    }
+    .success-subtitle {
+      font-size: 15px; font-style: italic;
+      color: var(--mid); line-height: 1.6;
+      max-width: 400px; margin: 0 auto;
+    }
+    .success-events {
+      display: flex; flex-direction: column; gap: 8px;
+      margin: 0 0 24px;
+    }
+    .success-event-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      background: var(--white);
+      border: 1px solid rgba(184,92,56,0.22);
+      font-family: 'Inter', sans-serif; font-size: 13px;
+      text-align: left;
+    }
+    .success-event-row.yes { border-left: 3px solid var(--terra); }
+    .success-event-row.no  { opacity: 0.5; }
+    .success-event-name { flex: 1; color: var(--dark); font-size: 13px; }
+    .success-event-status {
+      font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--terra); white-space: nowrap;
+    }
+    .success-event-row.no .success-event-status { color: var(--muted); }
+    .success-update-btn {
+      background: transparent;
+      border: 1px solid rgba(184,92,56,0.3);
+      border-radius: 50px; padding: 11px 32px;
+      color: var(--terra);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .success-update-btn:hover { background: rgba(184,92,56,0.06); }
+
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+    .details-section { animation: fadeIn 0.35s ease; }
+
+    @media (max-width: 520px) {
+      .page-card { padding: 36px 20px 44px; border-radius: 8px; }
+      .card-body-wrap { gap: 10px; }
+      .card-actions { flex-direction: row; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="stars" aria-hidden="true"></canvas>
+
+  <div class="page">
+
+    <!-- Loading -->
+    <div class="state-loading" id="state-loading">
+      <p>Loading your invitation…</p>
+    </div>
+
+    <!-- Error -->
+    <div class="state-error" id="state-error" style="display:none;">
+      <h2>Invitation Not Found</h2>
+      <p id="error-message">We couldn't find your invitation. Please check the link in your email.</p>
+    </div>
+
+    <!-- RSVP card -->
+    <div class="page-card" id="rsvp-content" style="display:none;">
+
+      <div class="rsvp-logo">
+        <a href="/" aria-label="Back to main site">
+          <img src="/logo.png" alt="AS" class="rsvp-logo-img">
+        </a>
+      </div>
+
+      <div class="divider"><div class="divider-line"></div><span class="divider-gem">◆</span><div class="divider-line"></div></div>
+
+      <div class="update-notice" id="update-notice" style="display:none;">
+        ✓ We already have your RSVP on file — you can update it below.
+      </div>
+
+      <div class="greeting">
+        <p class="greeting-eyebrow">YOU'RE WARMLY INVITED</p>
+        <h1 class="greeting-name" id="guest-name">—</h1>
+        <p class="greeting-sub">Please select your response for each event below.</p>
+        <p class="greeting-count" id="guest-count-hint" style="display:none;"></p>
+      </div>
+
+      <div class="events-list" id="events-list">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Details shown when attending any event -->
+      <div class="details-section" id="details-section" style="display:none;">
+        <div id="hoodie-section" style="display:none;"></div>
+      </div>
+
+      <div class="divider"><div class="divider-line"></div><span class="divider-gem">◆</span><div class="divider-line"></div></div>
+
+      <!-- Mailing address -->
+      <div class="form-card">
+        <div class="form-card-label">Mailing Address <span>*</span></div>
+        <div class="form-card-sub">We'll use this for future correspondence regarding the celebration.</div>
+        <textarea id="mailing-address" placeholder="Street address, City, State, Zip Code"></textarea>
+      </div>
+
+      <!-- Dietary (inside its own subtle card) -->
+      <div class="form-card" id="dietary-card" style="display:none;">
+        <div class="form-card-label">Dietary Restrictions or Allergies</div>
+        <div class="form-card-sub">Let us know of any dietary needs so we can accommodate you.</div>
+        <input type="text" id="dietary" placeholder="Kosher, gluten-free, nut allergy, etc. (optional)">
+      </div>
+
+      <!-- Message for Alex -->
+      <div class="form-card">
+        <div class="form-card-label">A Message for Alex <span style="color:var(--muted);font-weight:400;font-size:12px;">(optional)</span></div>
+        <div class="form-card-sub">Share a blessing, a memory, or words of wisdom for Alex.</div>
+        <textarea id="message" placeholder="Your heartfelt message here…"></textarea>
+      </div>
+
+      <div class="form-error" id="form-error"></div>
+
+      <div class="submit-wrap">
+        <button class="submit-btn" id="submit-btn">Send RSVP</button>
+      </div>
+
+      <p class="rsvp-questions" id="rsvp-questions-line"></p>
+
+    </div><!-- /.page-card -->
+
+    <!-- Success card -->
+    <div class="page-card state-success" id="state-success" style="display:none;">
+
+      <div class="rsvp-logo">
+        <a href="/" aria-label="Back to main site">
+          <img src="/logo.png" alt="AS" class="rsvp-logo-img">
+        </a>
+      </div>
+
+      <div class="divider"><div class="divider-line"></div><span class="divider-gem">◆</span><div class="divider-line"></div></div>
+
+      <div class="success-inner">
+        <h2 class="success-title" id="success-title">Toda Raba!</h2>
+        <p class="success-subtitle" id="success-subtitle">Your RSVP is confirmed. We can't wait to celebrate with you.</p>
+      </div>
+
+      <div class="divider"><div class="divider-line"></div><span class="divider-gem">◆</span><div class="divider-line"></div></div>
+
+      <div class="success-events" id="success-events"></div>
+
+      <div style="text-align:center; margin-top:8px;">
+        <button class="success-update-btn" id="update-btn">Update my RSVP</button>
+      </div>
+
+    </div>
+
+  </div><!-- /.page -->
+
+  <script src="/rsvp.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Files to exclude from the Docker build context
+# (keeps the image lean and avoids accidentally including secrets)
+
+node_modules/
+.git/
+.gitignore
+
+# Guest data stays on the host, never baked into the image
+data/guests.json
+data/rsvps.json
+
+# Secrets
+.env
+.env.*
+
+# Dev files
+*.md
+.DS_Store
+Thumbs.db
+guest-list-template.xlsx
+.~lock.*

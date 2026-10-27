@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 552 677" width="552" height="677">
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6B0E05"/>
+      <stop offset="25%" stop-color="#9E1F10"/>
+      <stop offset="50%" stop-color="#C83A18"/>
+      <stop offset="75%" stop-color="#D96818"/>
+      <stop offset="100%" stop-color="#EAAC2C"/>
+    </linearGradient>
+  </defs>
+  <!-- Sample monogram (fictional honoree "Alex Sample") -->
+  <text x="276" y="450" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="340" fill="url(#grad)">AS</text>
+</svg>

@@ -1,0 +1,45 @@
+# ── Node ──────────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+.npm
+
+# ── Guest data — NEVER commit to GitHub ──────────────────────────────────────
+# These files contain personal information (names, emails, RSVPs).
+# They live only on your home server, mounted as a Docker volume.
+data/guests.json
+data/rsvps.json
+*.xlsx
+*.csv
+
+# Config CAN be committed (it has no passwords after setup),
+# but omit it if your gmailAppPassword is still in it.
+# Uncomment the next line to keep config out of GitHub too:
+# data/config.json
+
+# ── Secrets ───────────────────────────────────────────────────────────────────
+.env
+.env.*
+*.pem
+*.key
+
+# ── Excel temp files ──────────────────────────────────────────────────────────
+.~lock.*
+~$*
+
+# ── OS files ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+# (docker-compose.yml and Dockerfile ARE committed — they're code, not secrets)
+data/guests.json
+data/rsvps.json
+.env
+Alex Bar-Mitzvah Guest List (1).xlsx
+
+# ── Logo processing artifacts (intermediate files, not source assets) ─────────
+image_cd1275a0.png
+logo_clean.png
+logo_optA_transparent-outline.png
+logo_optB_cream-outline.png
+logo_optC_dark-outline.png
