@@ -6,17 +6,24 @@ A self-hosted event website and RSVP system built for a family Bar Mitzvah weeke
 - **Admin dashboard.** Manage guests, track responses, and edit all site text and event details without touching code.
 - **Email.** Save-the-dates, invitations, reminders, and pre-event updates are sent through Gmail with Nodemailer.
 - **Live display page.** A full-screen animated page for a TV or projector at the event.
-- **Simple deployment.** A single-file Node.js server with no runtime dependencies, run in Docker on a home server.
+- **Small footprint.** A single-file Node.js server built on Node's standard library. It depends on two packages: Nodemailer for email and xlsx for the guest import script. It runs in Docker on a home server.
 
 > All names, emails, and venues in this repository are fictional sample data.
 
+## Built with
+
+I designed this app and built it with [Claude Code](https://claude.com/claude-code), Anthropic's AI coding agent. I set the requirements, reviewed the changes, and tested and deployed each release on my own home server.
+
 ## Deploy to your home server
 
-**No npm install required.** Just copy the folder and run:
+Install dependencies, then start the server with an admin password:
 
 ```bash
-node server.js
+npm install
+ADMIN_TOKEN=yourStrongPassword node server.js
 ```
+
+The site itself starts without `npm install`. The email features and the guest import script need it. The Docker image runs it for you.
 
 The site will be live at `http://YOUR-SERVER-IP:10003`
 
@@ -29,7 +36,7 @@ The site will be live at `http://YOUR-SERVER-IP:10003`
 | `PORT`              | `10003`        | Port the server listens on      |
 | `ADMIN_TOKEN`       | *(required)* | Password for the admin dashboard |
 
-**Change the admin token before going live:**
+**The server will not start without `ADMIN_TOKEN`:**
 ```bash
 ADMIN_TOKEN=yourStrongPassword node server.js
 ```
@@ -42,7 +49,7 @@ Or set it permanently in your system environment / systemd service file.
 
 ```
 bar-mitzvah-rsvp/
-├── server.js          ← Node.js server (no dependencies)
+├── server.js          ← Node.js server (standard library; loads Nodemailer for email)
 ├── package.json
 ├── data/
 │   └── rsvps.json     ← All RSVP data (auto-created)

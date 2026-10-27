@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Running the server
 
 ```bash
-node server.js                        # start directly (no npm needed)
+ADMIN_TOKEN=secret node server.js     # start directly (site works without npm install; email needs it)
 npm start                             # same via package.json
 
 # With Docker (production setup on Windows/WSL2):
@@ -42,7 +42,7 @@ The `config.json` dance is necessary because the live config has real credential
 
 ## Architecture
 
-**`server.js`** is a single-file, zero-npm-dependency HTTP server using only Node.js built-ins (`http`, `fs`, `path`, `url`). It handles all API routes and serves static files from `public/`. It reads `nodemailer` lazily at runtime (only when email endpoints are called), which is why npm install is only needed for scripts.
+**`server.js`** is a single-file HTTP server built on Node.js built-ins (`http`, `fs`, `path`, `url`). It handles all API routes and serves static files from `public/`. It reads `nodemailer` lazily at runtime (only when email endpoints are called), so the site starts without npm install, but sending any email requires it.
 
 **`data/`** is the entire database — three JSON files mounted as a Docker volume so they survive container rebuilds:
 - `guests.json` — the guest list; each guest has a unique `token` that powers their personalized RSVP URL (`/rsvp/:token`)

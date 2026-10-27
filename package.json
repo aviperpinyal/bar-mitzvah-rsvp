@@ -20,7 +20,7 @@
     "xlsx":       "^0.18.5"
   },
   "_notes": {
-    "server": "The web server (server.js) has zero npm dependencies — pure Node.js built-ins.",
-    "scripts": "nodemailer and xlsx are only needed for the email + import scripts in scripts/. Run: npm install"
+    "server": "server.js starts with Node.js built-ins only. Its email features load nodemailer at runtime.",
+    "scripts": "nodemailer is needed for all email sending. xlsx is needed for scripts/import-guests.js. Run: npm install"
   }
 }

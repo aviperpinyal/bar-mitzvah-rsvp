@@ -1,6 +1,6 @@
 # ── Alex's Bar Mitzvah — Dockerfile ─────────────────────────────────────────
 # Builds a minimal Node.js container for the bar mitzvah website.
-# The web server has zero npm dependencies, so the image is very small.
+# The server uses Node.js built-ins plus Nodemailer for email.
 #
 # Build:  docker build -t bar-mitzvah-rsvp .
 # Run:    docker-compose up -d
@@ -13,8 +13,7 @@ WORKDIR /app
 # Copy package files first (lets Docker cache the npm install layer)
 COPY package.json package-lock.json* ./
 
-# Install ONLY the script dependencies (nodemailer, xlsx)
-# The web server itself needs nothing — skip devDeps
+# Install runtime dependencies: nodemailer (email) and xlsx (guest import)
 RUN npm install --omit=dev 2>/dev/null || npm install
 
 # Copy application source
